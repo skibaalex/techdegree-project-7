@@ -9,7 +9,7 @@ const NotFound = ({handleSearchSubmit}) => {
         <>
             <SearchForm handleSubmitSearch={handleSearchSubmit} />
             <Nav />
-            <h2 className="h2">404 PAGE NOT FOUND</h2>
+            <h2 className="h2">404 Page not found.</h2>
             <Image src="https://media3.giphy.com/media/AKKhWXbQrmXFdOFNDf/giphy.gif?cid=ecf05e476pgzzx6yhxmsl20p1sood6cuihpjc0g30m5mzyz1&rid=giphy.gif&ct=g" alt="Oops Not found" />
         </>
     )
