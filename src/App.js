@@ -1,25 +1,57 @@
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Component } from 'react';
 import './App.css';
+import { Redirect, Route, Switch, useHistory } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
+import MainDisplay from './components/MainDisplay';
+import NotFound from './components/NotFound';
+import axios from 'axios'
+import apiKey from './config'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component{
+  state = {
+    images: [],
+    searching: false
+  }
+
+
+  handleSearch = (value = 'random') => {
+    this.setState({searching: true, images: []})
+    axios
+			.get(
+				`https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&tags=${value}&api_key=${apiKey}&per_page=24&nojsoncallback=1`
+			)
+			.then(res => {
+        const {data : { photos : {photo}}} = res
+				const images = photo.map(photoDetails => {
+          const { server, id, secret } = photoDetails;
+          return {
+            url: `https://live.staticflickr.com/${server}/${id}_${secret}.jpg`,
+            id
+          }
+        })
+        this.setState({images, searching: false})
+			})
+			.catch(error => {
+        this.setState({images: [], searching: false})
+        console.error(error)});
+  }
+
+  render(){
+    return (
+      <div className="container">
+        <BrowserRouter>
+        <Switch>
+          <Route exact path="/" render={() => <Redirect to="/search/cats" />} />
+          <Route exact path="/search" render={() => <Redirect to="/search/dogs" />} />
+          <Route path="/search/:query" render={() => <MainDisplay searching={this.state.searching} images={this.state.images} handleSearch={this.handleSearch} />} />
+          <Route path="/" render={() => <NotFound handleSearch={this.handleSearch} />} />
+          </Switch>
+        </BrowserRouter>
+      </div>
+    );
+  }
+  
 }
 
 export default App;
