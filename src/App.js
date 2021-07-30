@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Component } from 'react';
 import './App.css';
-import { Redirect, Route, Switch, useHistory } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import MainDisplay from './components/MainDisplay';
 import NotFound from './components/NotFound';
@@ -11,12 +11,13 @@ import apiKey from './config'
 class App extends Component{
   state = {
     images: [],
-    searching: false
+    searching: false,
+    searchTerm: ''
   }
 
 
-  handleSearch = (value = 'random') => {
-    this.setState({searching: true, images: []})
+  handleSearch = (value) => {
+    this.setState({searching: true, images: [], searchTerm: value})
     axios
 			.get(
 				`https://www.flickr.com/services/rest/?method=flickr.photos.search&format=json&tags=${value}&api_key=${apiKey}&per_page=24&nojsoncallback=1`
@@ -44,7 +45,7 @@ class App extends Component{
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/search/cats" />} />
           <Route exact path="/search" render={() => <Redirect to="/search/dogs" />} />
-          <Route path="/search/:query" render={() => <MainDisplay searching={this.state.searching} images={this.state.images} handleSearch={this.handleSearch} />} />
+          <Route path="/search/:query" render={() => <MainDisplay searchTerm={this.state.searchTerm} searching={this.state.searching} images={this.state.images} handleSearch={this.handleSearch} />} />
           <Route path="/" render={() => <NotFound handleSearch={this.handleSearch} />} />
           </Switch>
         </BrowserRouter>

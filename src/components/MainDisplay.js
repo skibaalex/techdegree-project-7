@@ -4,7 +4,7 @@ import Gallery from './Gallery'
 import Nav from './Nav'
 import SearchForm from './SearchBar'
 
-const MainDisplay = ({handleSearch, searching, images}) => {
+const MainDisplay = ({handleSearch, searching, images, searchTerm}) => {
     const {query} = useParams()
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const MainDisplay = ({handleSearch, searching, images}) => {
         <Nav />
         {searching
         ? <h2>Searching...</h2>
-        :<Gallery images={images} searching={searching} />
+        :<Gallery searchTerm={searchTerm} images={images} searching={searching} />
         }
         
       </>
